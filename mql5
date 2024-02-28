@@ -1,0 +1,158 @@
+mql5
+//+------------------------------------------------------------------+
+//|                                         EasyBracket MT4          |
+//|                                            forexroboteasy.com    |
+//|                                      Developed by Forex Robot Easy Team |
+//+------------------------------------------------------------------+
+#property strict
+
+// Global variables
+int candlesToBracket = 5;
+ENUM_TIMEFRAMES bracketTimeframe = PERIOD_H1;
+
+//+------------------------------------------------------------------+
+//| Expert initialization function                                   |
+//+------------------------------------------------------------------+
+int OnInit()
+{
+    // Set the number of candles to bracket
+    candlesToBracket = 5;
+    
+    // Set the timeframe of candles for bracket orders
+    bracketTimeframe = PERIOD_H1;
+    
+    // Initialize error handling
+    if(!InitErrorHandling())
+    {
+        Print('Failed to initialize error handling');
+        return INIT_FAILED;
+    }
+    
+    // Add any additional initialization steps here
+    
+    return INIT_SUCCEEDED;
+}
+
+//+------------------------------------------------------------------+
+//| Expert deinitialization function                                 |
+//+------------------------------------------------------------------+
+void OnDeinit(const int reason)
+{
+    // Perform any cleanup or deinitialization steps here
+    
+    // Uninitialize error handling
+    UninitErrorHandling();
+}
+
+//+------------------------------------------------------------------+
+//| Expert start function                                            |
+//+------------------------------------------------------------------+
+void OnTick()
+{
+    // Check if bracket orders are allowed
+    if(!AreBracketOrdersAllowed())
+    {
+        Print('Bracket orders are not allowed');
+        return;
+    }
+    
+    // Get the current price
+    double currentPrice = SymbolInfoDouble(_Symbol, SYMBOL_BID);
+    
+    // Calculate the upper and lower range for bracket orders
+    double upperRange = currentPrice + SymbolInfoDouble(_Symbol, SYMBOL_POINT) * candlesToBracket;
+    double lowerRange = currentPrice - SymbolInfoDouble(_Symbol, SYMBOL_POINT) * candlesToBracket;
+    
+    // Check if a buy order can be placed above the range
+    if(currentPrice > upperRange)
+    {
+        PlaceBracketBuyOrder(upperRange);
+    }
+    
+    // Check if a sell order can be placed below the range
+    if(currentPrice < lowerRange)
+    {
+        PlaceBracketSellOrder(lowerRange);
+    }
+}
+
+//+------------------------------------------------------------------+
+//| Function to place a bracket buy order                            |
+//+------------------------------------------------------------------+
+void PlaceBracketBuyOrder(const double price)
+{
+    // Implement the logic to place a buy order above the specified range here
+    
+    // Example code:
+    int ticket = OrderSend(_Symbol, OP_BUY, 0.01, price, 3, 0, 0, 'Buy Order', 0, 0, CLR_NONE);
+    
+    if(ticket <= 0)
+    {
+        Print('Failed to place buy order: ', GetLastError());
+    }
+    else
+    {
+        Print('Buy order placed successfully');
+    }
+}
+
+//+------------------------------------------------------------------+
+//| Function to place a bracket sell order                           |
+//+------------------------------------------------------------------+
+void PlaceBracketSellOrder(const double price)
+{
+    // Implement the logic to place a sell order below the specified range here
+    
+    // Example code:
+    int ticket = OrderSend(_Symbol, OP_SELL, 0.01, price, 3, 0, 0, 'Sell Order', 0, 0, CLR_NONE);
+    
+    if(ticket <= 0)
+    {
+        Print('Failed to place sell order: ', GetLastError());
+    }
+    else
+    {
+        Print('Sell order placed successfully');
+    }
+}
+
+//+------------------------------------------------------------------+
+//| Function to check if bracket orders are allowed                   |
+//+------------------------------------------------------------------+
+bool AreBracketOrdersAllowed()
+{
+    // Implement the logic to check if bracket orders are allowed here
+    
+    // Example code:
+    bool isAllowed = true;
+    
+    // Add any additional checks here
+    
+    return isAllowed;
+}
+
+//+------------------------------------------------------------------+
+//| Function to initialize error handling                            |
+//+------------------------------------------------------------------+
+bool InitErrorHandling()
+{
+    // Implement the logic to initialize error handling here
+    
+    // Example code:
+    bool isInitialized = true;
+    
+    // Add any additional initialization steps here
+    
+    return isInitialized;
+}
+
+//+------------------------------------------------------------------+
+//| Function to uninitialize error handling                          |
+//+------------------------------------------------------------------+
+void UninitErrorHandling()
+{
+    // Implement the logic to uninitialize error handling here
+    
+    // Add any cleanup steps here
+}
+
